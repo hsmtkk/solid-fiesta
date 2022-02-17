@@ -1,0 +1,8 @@
+---
+resources:
+  - k8s/consumer.yml
+  - k8s/producer.yml
+configMapGenerator:
+  - name: solid-fiesta-promtail
+    files:
+      - promtail/hogehoge

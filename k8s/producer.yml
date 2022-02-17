@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solid-fiesta-producer
+  labels:
+    app: solid-fiesta-producer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: solid-fiesta-producer
+  template:
+    metadata:
+      labels:
+        app: solid-fiesta-producer
+    spec:
+      containers:
+        - name: producer
+          image: hsmtkk/solid-fiesta:latest
+          imagePullPolicy: Always
+          command:
+            - /usr/local/bin/producer
+          env:
+            - name: NATS_URL
+              value: nats://solid-fiesta-nats:4222
+            - name: NATS_SUBJECT
+              value: test
+            - name: INTERVAL_SECONDS
+              value: "1"
