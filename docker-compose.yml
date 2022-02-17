@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  producer:
+    image: hsmtkk/solid-festa:producer-latest
+    env:
+      NATS_URL: nats://nats:4222
+  nats:
+    image: nats:latest
+  consumer:
+    image: hsmtkk/solid-festa:consumer-latest
+    env:
+      NATS_URL: nats://nats:4222
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - 3100:3100
