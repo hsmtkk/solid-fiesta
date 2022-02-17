@@ -1,13 +1,17 @@
 version: "3.8"
 services:
   producer:
-    image: hsmtkk/solid-festa:producer-latest
+    image: hsmtkk/solid-festa:latest
+    command:
+      - /usr/local/bin/producer
     env:
       NATS_URL: nats://nats:4222
   nats:
     image: nats:latest
   consumer:
-    image: hsmtkk/solid-festa:consumer-latest
+    image: hsmtkk/solid-festa:latest
+    command:
+      - /usr/local/bin/consumer
     env:
       NATS_URL: nats://nats:4222
   prometheus:
