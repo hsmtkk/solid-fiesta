@@ -19,7 +19,3 @@ jobs:
         with:
           push: true
           tags: hsmtkk/solid-fiesta:latest
-      - name: scan image
-        uses: anchore/scan-action@v3
-        with:
-          image: hsmtkk/solid-fiesta:latest
