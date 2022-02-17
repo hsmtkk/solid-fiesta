@@ -2,20 +2,20 @@
 version: "3.8"
 services:
   producer:
-    image: hsmtkk/solid-festa:latest
+    image: hsmtkk/solid-fiesta:latest
     command:
       - /usr/local/bin/producer
-    env:
+    environment:
       NATS_URL: nats://nats:4222
       NATS_SUBJECT: test
       INTERVAL_SECONDS: "1"
   nats:
     image: nats:latest
   consumer:
-    image: hsmtkk/solid-festa:latest
+    image: hsmtkk/solid-fiesta:latest
     command:
       - /usr/local/bin/consumer
-    env:
+    environment:
       NATS_URL: nats://nats:4222
       NATS_SUBJECT: test
   prometheus:

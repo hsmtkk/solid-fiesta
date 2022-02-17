@@ -10,5 +10,5 @@ WORKDIR /opt/producer
 RUN go build
 
 FROM gcr.io/distroless/cc-debian11 AS runtime
-COPY --from=builder /opt/consumer /usr/local/bin/consumer
-COPY --from=builder /opt/producer /usr/local/bin/producer
+COPY --from=builder /opt/consumer/consumer /usr/local/bin/consumer
+COPY --from=builder /opt/producer/producer /usr/local/bin/producer
