@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hsmtkk/solid-fiesta/env"
-	"github.com/nats-io/nats.go"
+	"github.com/hsmtkk/solid-fiesta/waitnats"
 	"go.uber.org/zap"
 )
 
@@ -22,10 +22,7 @@ func main() {
 	natsSubject := env.MandatoryString("NATS_SUBJECT")
 	intervalSeconds := env.MandatoryInt("INTERVAL_SECONDS")
 
-	natsConn, err := nats.Connect(natsURL)
-	if err != nil {
-		sugar.Fatalw("failed to connect NATS", "URL", natsURL, "error", err)
-	}
+	natsConn := waitnats.WaitNATS(natsURL)
 	defer natsConn.Close()
 
 	count := 0

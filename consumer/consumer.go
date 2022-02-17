@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/hsmtkk/solid-fiesta/env"
+	"github.com/hsmtkk/solid-fiesta/waitnats"
 	"github.com/nats-io/nats.go"
 	"go.uber.org/zap"
 )
@@ -20,16 +21,11 @@ func main() {
 	natsURL := env.MandatoryString("NATS_URL")
 	natsSubject := env.MandatoryString("NATS_SUBJECT")
 
-	natsConn, err := nats.Connect(natsURL)
-	if err != nil {
-		sugar.Fatalw("failed to connect NATS", "URL", natsURL, "error", err)
-	}
+	natsConn := waitnats.WaitNATS(natsURL)
 	defer natsConn.Close()
 
 	handler := newHandler(sugar)
-
 	natsConn.Subscribe(natsSubject, handler.handle)
-
 	select {}
 }
 
