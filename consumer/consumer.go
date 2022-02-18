@@ -1,13 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/hsmtkk/solid-fiesta/env"
 	"github.com/hsmtkk/solid-fiesta/waitnats"
 	"github.com/nats-io/nats.go"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
+)
+
+var (
+	subscribedMessages = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "subscribed_messages",
+		Help: "the number of NATS messages subscribed",
+	})
 )
 
 func main() {
@@ -20,13 +32,17 @@ func main() {
 
 	natsURL := env.MandatoryString("NATS_URL")
 	natsSubject := env.MandatoryString("NATS_SUBJECT")
+	exporterPort := env.MandatoryInt("EXPORTER_PORT")
 
 	natsConn := waitnats.WaitNATS(natsURL)
 	defer natsConn.Close()
 
 	handler := newHandler(sugar)
 	natsConn.Subscribe(natsSubject, handler.handle)
-	select {}
+
+	exporterAddr := fmt.Sprintf(":%d", exporterPort)
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(exporterAddr, nil)
 }
 
 func newHandler(sugar *zap.SugaredLogger) *handler {
@@ -38,6 +54,7 @@ type handler struct {
 }
 
 func (hdl *handler) handle(msg *nats.Msg) {
+	subscribedMessages.Inc()
 	s := string(msg.Data)
 	count, err := strconv.Atoi(s)
 	if err != nil {
