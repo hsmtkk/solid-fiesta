@@ -5,6 +5,10 @@ metadata:
   name: solid-fiesta-producer
   labels:
     app: solid-fiesta-producer
+  annotations:
+    prometheus.io/scrape: true
+    prometheus.io/path: /metrics
+    prometheus.io/port: 9123
 spec:
   replicas: 2
   selector:

@@ -2,6 +2,9 @@
 resources:
   - consumer.yml
   - nats.yml
-  - nginx.yml
   - producer.yml
   - prometheus.yml
+configMapGenerator:
+  - name: solid-fiesta-prometheus
+    files:
+      - prometheus/prometheus.yml

@@ -5,6 +5,10 @@ metadata:
   name: solid-fiesta-consumer
   labels:
     app: solid-fiesta-consumer
+  annotations:
+    prometheus.io/scrape: true
+    prometheus.io/path: /metrics
+    prometheus.io/port: 9123
 spec:
   replicas: 2
   selector:

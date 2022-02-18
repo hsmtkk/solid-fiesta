@@ -5,6 +5,10 @@ metadata:
   name: solid-fiesta-nats
   labels:
     app: solid-fiesta-nats
+  annotations:
+    prometheus.io/scrape: true
+    prometheus.io/path: /metrics
+    prometheus.io/port: 7777
 spec:
   replicas: 1
   selector:
