@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solid-fiesta-debug
+  labels:
+    app: solid-fiesta-debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solid-fiesta-debug
+  template:
+    metadata:
+      labels:
+        app: solid-fiesta-debug
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu:latest
+          imagePullPolicy: Always
+          command:
+            - tail
+            - -f
+            - /dev/null

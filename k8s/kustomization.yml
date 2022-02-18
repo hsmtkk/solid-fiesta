@@ -1,6 +1,7 @@
 ---
 resources:
   - consumer.yml
+  - debug.yml
   - nats.yml
   - producer.yml
   - prometheus.yml

@@ -13,10 +13,10 @@ func WaitNATS(sugar *zap.SugaredLogger, natsURL string) *nats.Conn {
 	for {
 		natsConn, err = nats.Connect(natsURL)
 		if err == nil {
-			sugar.Infow("waiting NATS", "URL", natsURL)
+			sugar.Infow("connected NATS", "URL", natsURL)
 			break
 		} else {
-			sugar.Infow("connected NATS", "URL", natsURL)
+			sugar.Infow("waiting NATS", "URL", natsURL, "error", err)
 			time.Sleep(1 * time.Second)
 		}
 	}
