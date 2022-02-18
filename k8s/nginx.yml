@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solid-fiesta-nginx
+  labels:
+    app: solid-fiesta-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solid-fiesta-nginx
+  template:
+    metadata:
+      labels:
+        app: solid-fiesta-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+        - name: exporter
+          image: nginx/nginx-prometheus-exporter:latest
+          imagePullPolicy: Always
+          args:
+            - -nginx.scrape-uri=http://127.0.0.1:8080/stub_status
+          ports:
+            - containerPort: 9113
+          startupProbe:
+            httpGet:
+              path: /metrics
+              port: 9113
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9113
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9113
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx
+      volumes:
+        - name: config
+          configMap:
+            name: solid-fiesta-nginx      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solid-fiesta-nginx
+spec:
+  type: ClusterIP
+  selector:
+    app: solid-fiesta-nginx
+  ports:
+    - protocol: TCP
+      port: 80

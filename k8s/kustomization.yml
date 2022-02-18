@@ -3,5 +3,10 @@ resources:
   - consumer.yml
   - loki.yml
   - nats.yml
+  - nginx.yml
   - producer.yml
   - prometheus.yml
+configMapGenerator:
+  - name: solid-fiesta-nginx
+    files:
+      - nginx/nginx.conf

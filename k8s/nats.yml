@@ -33,6 +33,9 @@ spec:
         - name: exporter
           image: natsio/prometheus-nats-exporter:latest
           imagePullPolicy: Always
+          args:
+            - -varz
+            - http://127.0.0.1:8222
           ports:
             - containerPort: 7777
           startupProbe:
