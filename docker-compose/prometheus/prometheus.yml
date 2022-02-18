@@ -6,3 +6,4 @@ scrape_configs:
           - consumer:9123
           - producer:9123
           - nats-exporter:7777
+          - nginx-exporter:9113
