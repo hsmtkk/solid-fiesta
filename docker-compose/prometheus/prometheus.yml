@@ -5,4 +5,4 @@ scrape_configs:
           - localhost:9090
           - consumer:9123
           - producer:9123
-          - nats:7777
+          - nats-exporter:7777

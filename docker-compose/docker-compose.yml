@@ -12,6 +12,11 @@ services:
       INTERVAL_SECONDS: "1"
   nats:
     image: nats:latest
+  nats-exporter:
+    image: natsio/prometheus-nats-exporter:latest
+    command:
+      - -varz
+      - http://nats:8222
   consumer:
     image: hsmtkk/solid-fiesta:latest
     command:
