@@ -6,6 +6,7 @@ services:
     command:
       - /usr/local/bin/producer
     environment:
+      EXPORTER_PORT: 9123
       NATS_URL: nats://nats:4222
       NATS_SUBJECT: test
       INTERVAL_SECONDS: "1"
@@ -16,12 +17,15 @@ services:
     command:
       - /usr/local/bin/consumer
     environment:
+      EXPORTER_PORT: 9123
       NATS_URL: nats://nats:4222
       NATS_SUBJECT: test
   prometheus:
     image: prom/prometheus:latest
     ports:
       - 9090:9090
+    volumes:
+      - "./docker-compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
   loki:
     image: grafana/loki:latest
     ports:
