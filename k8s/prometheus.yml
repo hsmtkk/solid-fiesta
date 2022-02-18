@@ -78,12 +78,12 @@ metadata:
   name: solid-fiesta-prometheus
 spec:
   rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: solid-fiesta-prometheus
-            port:
-              number: 9090
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: solid-fiesta-prometheus
+                port:
+                  number: 9090
