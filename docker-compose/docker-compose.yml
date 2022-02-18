@@ -25,7 +25,7 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - "./docker-compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro"
   loki:
     image: grafana/loki:latest
     ports:
