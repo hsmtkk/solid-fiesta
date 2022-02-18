@@ -1,0 +1,7 @@
+---
+resources:
+  - consumer.yml
+  - loki.yml
+  - nats.yml
+  - producer.yml
+  - prometheus.yml

@@ -22,9 +22,25 @@ spec:
           command:
             - /usr/local/bin/producer
           env:
+            - name: EXPORTER_PORT
+              value: "9123"
             - name: NATS_URL
               value: nats://solid-fiesta-nats:4222
             - name: NATS_SUBJECT
               value: test
             - name: INTERVAL_SECONDS
               value: "1"
+          ports:
+            - containerPort: 9123
+          startupProbe:
+            httpGet:
+              path: /metrics
+              port: 9123
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9123
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9123
