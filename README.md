@@ -1,2 +1,2 @@
 # solid-fiesta
-Kuma service mesh example
+Istio service mesh example
