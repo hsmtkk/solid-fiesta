@@ -34,7 +34,7 @@ func main() {
 	natsSubject := env.MandatoryString("NATS_SUBJECT")
 	exporterPort := env.MandatoryInt("EXPORTER_PORT")
 
-	natsConn := waitnats.WaitNATS(natsURL)
+	natsConn := waitnats.WaitNATS(sugar, natsURL)
 	defer natsConn.Close()
 
 	handler := newHandler(sugar)

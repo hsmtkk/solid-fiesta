@@ -4,16 +4,19 @@ import (
 	"time"
 
 	"github.com/nats-io/nats.go"
+	"go.uber.org/zap"
 )
 
-func WaitNATS(natsURL string) *nats.Conn {
+func WaitNATS(sugar *zap.SugaredLogger, natsURL string) *nats.Conn {
 	var natsConn *nats.Conn
 	var err error
 	for {
 		natsConn, err = nats.Connect(natsURL)
 		if err == nil {
+			sugar.Infow("waiting NATS", "URL", natsURL)
 			break
 		} else {
+			sugar.Infow("connected NATS", "URL", natsURL)
 			time.Sleep(1 * time.Second)
 		}
 	}

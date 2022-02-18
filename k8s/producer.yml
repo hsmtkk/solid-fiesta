@@ -10,7 +10,7 @@ metadata:
     prometheus.io/path: /metrics
     prometheus.io/port: 9123
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: solid-fiesta-producer
