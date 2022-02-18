@@ -57,5 +57,5 @@ spec:
   selector:
     app: solid-fiesta-nats
   ports:
-  - protocol: TCP
-    port: 4222
+    - protocol: TCP
+      port: 4222

@@ -43,5 +43,5 @@ spec:
   selector:
     app: solid-fiesta-loki
   ports:
-  - protocol: TCP
-    port: 3100
+    - protocol: TCP
+      port: 3100

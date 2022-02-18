@@ -43,5 +43,5 @@ spec:
   selector:
     app: solid-fiesta-prometheus
   ports:
-  - protocol: TCP
-    port: 9090
+    - protocol: TCP
+      port: 9090
