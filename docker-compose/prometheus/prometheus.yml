@@ -2,7 +2,7 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets:
-        - localhost:9090
-        - consumer:9123
-        - producer:9123
-        - nats:7777
+          - localhost:9090
+          - consumer:9123
+          - producer:9123
+          - nats:7777
