@@ -66,3 +66,5 @@ spec:
   ports:
     - protocol: TCP
       port: 4222
+      name: nats
+
