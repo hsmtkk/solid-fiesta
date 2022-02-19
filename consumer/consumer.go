@@ -50,7 +50,7 @@ func main() {
 	ch := pubsub.Channel()
 	for msg := range ch {
 		subscribedMessages.Inc()
-		count, err := strconv.Atoi(msg.String())
+		count, err := strconv.Atoi(msg.Payload)
 		if err != nil {
 			sugar.Errorw("failed to parse as int", "message", msg, "error", err)
 			continue
