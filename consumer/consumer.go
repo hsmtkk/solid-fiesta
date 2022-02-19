@@ -1,14 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/hsmtkk/solid-fiesta/env"
-	"github.com/hsmtkk/solid-fiesta/waitnats"
-	"github.com/nats-io/nats.go"
+	"github.com/hsmtkk/solid-fiesta/waitredis"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,7 +18,7 @@ import (
 var (
 	subscribedMessages = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "subscribed_messages",
-		Help: "the number of NATS messages subscribed",
+		Help: "the number of messages subscribed",
 	})
 )
 
@@ -30,35 +30,31 @@ func main() {
 	defer logger.Sync()
 	sugar := logger.Sugar()
 
-	natsURL := env.MandatoryString("NATS_URL")
-	natsSubject := env.MandatoryString("NATS_SUBJECT")
+	redisHost := env.MandatoryString("REDIS_HOST")
+	redisPort := env.MandatoryInt("REDIS_PORT")
+	redisChannel := env.MandatoryString("REDIS_CHANNEL")
 	exporterPort := env.MandatoryInt("EXPORTER_PORT")
 
-	natsConn := waitnats.WaitNATS(sugar, natsURL)
-	defer natsConn.Close()
+	go func() {
+		exporterAddr := fmt.Sprintf(":%d", exporterPort)
+		http.Handle("/metrics", promhttp.Handler())
+		http.ListenAndServe(exporterAddr, nil)
+	}()
 
-	handler := newHandler(sugar)
-	natsConn.Subscribe(natsSubject, handler.handle)
+	redisConn := waitredis.WaitRedis(sugar, redisHost, redisPort)
+	defer redisConn.Close()
 
-	exporterAddr := fmt.Sprintf(":%d", exporterPort)
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(exporterAddr, nil)
-}
+	pubsub := redisConn.Subscribe(context.Background(), redisChannel)
+	defer pubsub.Close()
 
-func newHandler(sugar *zap.SugaredLogger) *handler {
-	return &handler{sugar}
-}
-
-type handler struct {
-	sugar *zap.SugaredLogger
-}
-
-func (hdl *handler) handle(msg *nats.Msg) {
-	subscribedMessages.Inc()
-	s := string(msg.Data)
-	count, err := strconv.Atoi(s)
-	if err != nil {
-		hdl.sugar.Errorw("failed to parse as int", "message", s, "error", err)
+	ch := pubsub.Channel()
+	for msg := range ch {
+		subscribedMessages.Inc()
+		count, err := strconv.Atoi(msg.String())
+		if err != nil {
+			sugar.Errorw("failed to parse as int", "message", msg, "error", err)
+			continue
+		}
+		sugar.Infow("subscribe", "count", count)
 	}
-	hdl.sugar.Infow("subscribe", "count", count)
 }
