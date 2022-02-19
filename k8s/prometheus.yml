@@ -5,17 +5,27 @@ metadata:
   name: solid-fiesta-prometheus
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
   name: solid-fiesta-prometheus
+  namespace: default
 subjects:
-  - kind: ServiceAccount
-    name: solid-fiesta-prometheus
-    namespace: default
+- kind: ServiceAccount
+  name: solid-fiesta-prometheus
 roleRef:
-  kind: ClusterRole
-  name: view
-  apiGroup: ""
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
 kind: Deployment
