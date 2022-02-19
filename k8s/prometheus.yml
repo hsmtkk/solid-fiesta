@@ -20,8 +20,8 @@ metadata:
   name: solid-fiesta-prometheus
   namespace: default
 subjects:
-- kind: ServiceAccount
-  name: solid-fiesta-prometheus
+  - kind: ServiceAccount
+    name: solid-fiesta-prometheus
 roleRef:
   kind: Role
   name: pod-reader
