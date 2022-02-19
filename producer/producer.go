@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 	"time"
 
 	"github.com/hsmtkk/solid-fiesta/env"
-	"github.com/hsmtkk/solid-fiesta/waitnats"
+	"github.com/hsmtkk/solid-fiesta/waitredis"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,7 +19,7 @@ import (
 var (
 	publishedMessages = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "published_messages",
-		Help: "the number of NATS messages published",
+		Help: "the number of messages published",
 	})
 )
 
@@ -30,13 +31,14 @@ func main() {
 	defer logger.Sync()
 	sugar := logger.Sugar()
 
-	natsURL := env.MandatoryString("NATS_URL")
-	natsSubject := env.MandatoryString("NATS_SUBJECT")
+	redisHost := env.MandatoryString("REDIS_HOST")
+	redisPort := env.MandatoryInt("REDIS_PORT")
+	redisChannel := env.MandatoryString("REDIS_CHANNEL")
 	intervalSeconds := env.MandatoryInt("INTERVAL_SECONDS")
 	exporterPort := env.MandatoryInt("EXPORTER_PORT")
 
-	natsConn := waitnats.WaitNATS(sugar, natsURL)
-	defer natsConn.Close()
+	redisConn := waitredis.WaitRedis(sugar, redisHost, redisPort)
+	defer redisConn.Close()
 
 	go func() {
 		exporterAddr := fmt.Sprintf(":%d", exporterPort)
@@ -47,7 +49,7 @@ func main() {
 	count := 0
 	for {
 		msg := strconv.Itoa(count)
-		natsConn.Publish(natsSubject, []byte(msg))
+		redisConn.Publish(context.Background(), redisChannel, []byte(msg))
 		sugar.Infow("publish", "count", count)
 		count += 1
 		publishedMessages.Inc()

@@ -28,9 +28,11 @@ spec:
           env:
             - name: EXPORTER_PORT
               value: "9123"
-            - name: NATS_URL
-              value: nats://solid-fiesta-nats:4222
-            - name: NATS_SUBJECT
+            - name: REDIS_HOST
+              value: solid-fiesta-redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_CHANNEL
               value: test
             - name: INTERVAL_SECONDS
               value: "1"

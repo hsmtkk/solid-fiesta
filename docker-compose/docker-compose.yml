@@ -7,24 +7,21 @@ services:
       - /usr/local/bin/producer
     environment:
       EXPORTER_PORT: 9123
-      NATS_URL: nats://nats:4222
-      NATS_SUBJECT: test
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: test
       INTERVAL_SECONDS: "5"
-  nats:
-    image: nats:latest
-  nats-exporter:
-    image: natsio/prometheus-nats-exporter:latest
-    command:
-      - -varz
-      - http://nats:8222
+  redis:
+    image: redis:latest
   consumer:
     image: hsmtkk/solid-fiesta:latest
     command:
       - /usr/local/bin/consumer
     environment:
       EXPORTER_PORT: 9123
-      NATS_URL: nats://nats:4222
-      NATS_SUBJECT: test
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: test
   prometheus:
     image: prom/prometheus:latest
     ports:
